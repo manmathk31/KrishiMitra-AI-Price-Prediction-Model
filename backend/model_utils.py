@@ -8,6 +8,7 @@ MODEL_PATH = os.path.join(BASE_DIR, "saved_models", "price_model.pkl")
 ENCODERS = {
     "crop": os.path.join(BASE_DIR, "saved_models", "crop_encoder.pkl"),
     "state": os.path.join(BASE_DIR, "saved_models", "state_encoder.pkl"),
+    "district": os.path.join(BASE_DIR, "saved_models", "district_encoder.pkl"),  # ✅ NEW
     "market": os.path.join(BASE_DIR, "saved_models", "market_encoder.pkl"),
     "variety": os.path.join(BASE_DIR, "saved_models", "variety_encoder.pkl"),
     "grade": os.path.join(BASE_DIR, "saved_models", "grade_encoder.pkl"),
@@ -32,6 +33,7 @@ def get_options():
     return {
         "crops": list(encoders["crop"].classes_),
         "states": list(encoders["state"].classes_),
+        "districts": list(encoders["district"].classes_),  # ✅ NEW
         "markets": list(encoders["market"].classes_),
         "varieties": list(encoders["variety"].classes_),
         "grades": list(encoders["grade"].classes_),
@@ -40,11 +42,12 @@ def get_options():
 def encode_input(payload):
     """
     Convert JSON payload into model input row.
-    Expected keys: crop,state,market,variety,grade,arrival,day,month,year
+    Expected keys: crop,state,district,market,variety,grade,arrival,day,month,year
     """
     try:
         c = int(encoders["crop"].transform([payload["crop"]])[0])
         s = int(encoders["state"].transform([payload["state"]])[0])
+        d = int(encoders["district"].transform([payload["district"]])[0])  # ✅ NEW
         m = int(encoders["market"].transform([payload["market"]])[0])
         v = int(encoders["variety"].transform([payload["variety"]])[0])
         g = int(encoders["grade"].transform([payload["grade"]])[0])
@@ -56,4 +59,5 @@ def encode_input(payload):
     month = int(payload.get("month", 1))
     year = int(payload.get("year", 2024))
 
-    return [[c, s, m, v, g, arrival, day, month, year]]
+    # ✅ Added district code in correct feature order
+    return [[c, s, d, m, v, g, arrival, day, month, year]]

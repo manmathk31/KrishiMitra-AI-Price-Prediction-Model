@@ -1,0 +1,17 @@
+# Ignore Python cache and virtual environment
+venv/
+__pycache__/
+
+
+# Ignore environment variables or secrets
+.env
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Compiled or temporary files
+*.log
+*.sqlite3

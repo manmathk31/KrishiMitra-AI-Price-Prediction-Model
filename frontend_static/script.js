@@ -3,6 +3,7 @@ const API_BASE = ""; // same origin via Flask
 const inputs = {
   crop: document.getElementById("search-crop"),
   state: document.getElementById("search-state"),
+  district: document.getElementById("search-district"), // ✅ NEW
   market: document.getElementById("search-market"),
   variety: document.getElementById("search-variety"),
   grade: document.getElementById("search-grade"),
@@ -13,12 +14,20 @@ const inputs = {
 const lists = {
   crop: document.getElementById("list-crop"),
   state: document.getElementById("list-state"),
+  district: document.getElementById("list-district"), // ✅ NEW
   market: document.getElementById("list-market"),
   variety: document.getElementById("list-variety"),
   grade: document.getElementById("list-grade"),
 };
 
-const selected = { crop: null, state: null, market: null, variety: null, grade: null };
+const selected = {
+  crop: null,
+  state: null,
+  district: null, // ✅ NEW
+  market: null,
+  variety: null,
+  grade: null,
+};
 
 let OPTIONS_LOADED = false;
 let OPTIONS = {};
@@ -26,6 +35,7 @@ let OPTIONS = {};
 const KEY_MAP = {
   crop: "crops",
   state: "states",
+  district: "districts", // ✅ NEW
   market: "markets",
   variety: "varieties",
   grade: "grades",
@@ -100,7 +110,6 @@ function attachTypeahead(k) {
     populateList(k, OPTIONS[key]?.slice(0, 50) || []);
   });
 
-  // ❌ remove old blur — we’ll handle closing globally
   input.addEventListener(
     "input",
     debounce(async e => {
@@ -117,7 +126,7 @@ function attachTypeahead(k) {
 }
 
 // attach to all
-["crop", "state", "market", "variety", "grade"].forEach(attachTypeahead);
+["crop", "state", "district", "market", "variety", "grade"].forEach(attachTypeahead); // ✅ added district
 
 // ✅ Global click listener to close dropdowns safely
 document.addEventListener("click", e => {
@@ -159,7 +168,7 @@ function animatePrice(price) {
 
 // Predict button
 document.getElementById("btn-predict").addEventListener("click", async () => {
-  const required = ["crop", "state", "market", "variety", "grade"];
+  const required = ["crop", "state", "district", "market", "variety", "grade"]; // ✅ added district
   for (const r of required) {
     if (!selected[r]) return alert(`Please select ${r}`);
   }
@@ -168,6 +177,7 @@ document.getElementById("btn-predict").addEventListener("click", async () => {
   const payload = {
     crop: selected.crop,
     state: selected.state,
+    district: selected.district, // ✅ NEW
     market: selected.market,
     variety: selected.variety,
     grade: selected.grade,
@@ -198,7 +208,7 @@ document.getElementById("btn-predict").addEventListener("click", async () => {
 
 // Reset
 document.getElementById("btn-reset").addEventListener("click", () => {
-  ["crop", "state", "market", "variety", "grade"].forEach(k => {
+  ["crop", "state", "district", "market", "variety", "grade"].forEach(k => { // ✅ added district
     selected[k] = null;
     inputs[k].value = "";
     displaySelected(k);

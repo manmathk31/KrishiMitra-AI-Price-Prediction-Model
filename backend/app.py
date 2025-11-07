@@ -4,7 +4,6 @@ from model_utils import model, get_options, encode_input
 import os
 
 app = Flask(__name__, static_folder="../frontend_static", static_url_path="/")
-# static_folder points to frontend_static relative to backend/
 
 @app.get("/health")
 def health():
@@ -17,7 +16,7 @@ def options():
 @app.post("/predict")
 def predict():
     data = request.get_json(force=True)
-    required = ["crop","state","market","variety","grade","arrival","day","month","year"]
+    required = ["crop","state","district","market","variety","grade","arrival","day","month","year"]  # ✅ added district
     missing = [r for r in required if r not in data]
     if missing:
         return jsonify({"error": f"Missing fields: {missing}"}), 400
@@ -30,16 +29,13 @@ def predict():
     except Exception as e:
         return jsonify({"error": "Model error: " + str(e)}), 500
 
-# Serve index.html and other static files
 @app.get("/")
 def index():
     return app.send_static_file("index.html")
 
 @app.get("/<path:filename>")
 def static_files(filename):
-    # serve CSS/JS/assets from frontend_static
     return send_from_directory(app.static_folder, filename)
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
-
