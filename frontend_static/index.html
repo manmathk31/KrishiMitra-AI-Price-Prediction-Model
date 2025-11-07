@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>KrishiMitra — Smart Mandi Price Prediction</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <style>
+    body {
+      background: linear-gradient(180deg, #f0fdf4 0%, #e0f2fe 100%);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 0.65rem 0.8rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      outline: none;
+      transition: all 0.18s;
+      background-color: rgba(255,255,255,0.95);
+    }
+    .input-field:focus {
+      border-color: #16a34a;
+      box-shadow: 0 0 0 4px rgba(16,185,129,0.12);
+    }
+
+    /* dropdown (absolute) - parent wrapper must be relative */
+    .dropdown-list {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      background: white;
+      box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+      position: absolute;
+      width: 100%;
+      z-index: 40;
+      display: none;
+      animation: fadeSlide 0.18s ease-in-out;
+    }
+    .dropdown-row {
+      padding: 0.6rem 0.9rem;
+      cursor: pointer;
+      transition: background .12s, transform .08s;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .dropdown-row:hover { background: #ecfdf5; transform: translateY(-1px); }
+    @keyframes fadeSlide {
+      from { opacity:0; transform: translateY(-6px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #16a34a, #059669);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: all 0.22s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary:hover { transform: translateY(-3px); }
+
+    .btn-reset {
+      padding: 0.55rem 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      background: white;
+    }
+
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #16a34a;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 0.65s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* small tweak to prevent page horizontal scroll on narrow screens */
+    .no-x { overflow-x: clip; }
+  </style>
+</head>
+
+<body class="text-gray-800 no-x">
+
+  <!-- Header -->
+  <header class="bg-gradient-to-r from-green-600 to-blue-600 text-white shadow-md">
+    <div class="max-w-6xl mx-auto flex justify-between items-center p-5">
+      <div>
+        <h1 class="text-3xl font-semibold tracking-wide flex items-center gap-2">
+          <span class="text-2xl">🌾</span>
+          KrishiMitra
+        </h1>
+        <p class="text-sm text-green-100">Smart Mandi Price Prediction</p>
+      </div>
+      <div class="text-sm text-green-100">Local demo</div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-6xl mx-auto mt-8 p-8 bg-white/90 backdrop-blur-md shadow-2xl rounded-2xl grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <!-- Inputs -->
+    <section class="lg:col-span-2 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Each wrapper is relative so the absolute dropdown aligns -->
+        <div class="relative">
+          <label class="block text-sm text-gray-600 mb-1">Crop</label>
+          <input id="search-crop" class="input-field" placeholder="Select crop..." autocomplete="off" />
+          <div id="list-crop" class="dropdown-list"></div>
+          <div class="text-xs text-gray-500 mt-1">Selected: <span id="sel-crop">—</span></div>
+        </div>
+
+        <div class="relative">
+          <label class="block text-sm text-gray-600 mb-1">State</label>
+          <input id="search-state" class="input-field" placeholder="Select state..." autocomplete="off" />
+          <div id="list-state" class="dropdown-list"></div>
+          <div class="text-xs text-gray-500 mt-1">Selected: <span id="sel-state">—</span></div>
+        </div>
+
+        <div class="relative">
+          <label class="block text-sm text-gray-600 mb-1">Mandi / Market</label>
+          <input id="search-market" class="input-field" placeholder="Select market..." autocomplete="off" />
+          <div id="list-market" class="dropdown-list"></div>
+          <div class="text-xs text-gray-500 mt-1">Selected: <span id="sel-market">—</span></div>
+        </div>
+
+        <div class="relative">
+          <label class="block text-sm text-gray-600 mb-1">Variety</label>
+          <input id="search-variety" class="input-field" placeholder="Select variety..." autocomplete="off" />
+          <div id="list-variety" class="dropdown-list"></div>
+          <div class="text-xs text-gray-500 mt-1">Selected: <span id="sel-variety">—</span></div>
+        </div>
+
+        <div class="relative">
+          <label class="block text-sm text-gray-600 mb-1">Grade</label>
+          <input id="search-grade" class="input-field" placeholder="Select grade..." autocomplete="off" />
+          <div id="list-grade" class="dropdown-list"></div>
+          <div class="text-xs text-gray-500 mt-1">Selected: <span id="sel-grade">—</span></div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-gray-600 mb-1">Arrival Quantity (Quintal)</label>
+          <input id="input-arrival" type="number" placeholder="e.g., 50" class="input-field" />
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm text-gray-600 mb-1">Select Date</label>
+          <input id="input-date" type="date" class="input-field" />
+        </div>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex items-center gap-4 pt-4">
+        <button id="btn-predict" class="btn-primary flex items-center gap-2">
+          <i data-feather="bar-chart-2" class="w-4 h-4"></i>
+          Predict Price
+        </button>
+
+        <button id="btn-reset" class="btn-reset">Reset</button>
+
+        <div id="loading" class="hidden text-sm text-gray-700 flex items-center gap-2">
+          <span class="loader"></span>
+          Predicting…
+        </div>
+      </div>
+    </section>
+
+    <!-- Result -->
+    <aside class="bg-gradient-to-b from-green-100 to-blue-50 p-8 rounded-2xl flex flex-col items-center justify-center text-center shadow-inner">
+      <i data-feather="trending-up" class="text-green-600 w-12 h-12 mb-3"></i>
+      <h3 class="text-gray-700 text-lg font-medium">Predicted Modal Price</h3>
+
+      <div id="result-price" class="text-5xl font-bold text-green-700 mt-3">—</div>
+      <div id="result-note" class="text-sm text-gray-500 mt-2">Estimated price based on model</div>
+    </aside>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-8 text-xs text-gray-600 text-center pb-4">
+    Built with ❤️ for Indian farmers • KrishiMitra ©2025
+  </footer>
+
+  <script src="script.js"></script>
+  <script>feather.replace()</script>
+</body>
+</html>
