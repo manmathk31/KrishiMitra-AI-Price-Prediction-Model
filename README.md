@@ -17,7 +17,8 @@ It helps farmers and traders estimate market prices based on *crop, state, distr
 ---
 
 ## 📁 Project Structure
-bash
+```bash
+
 KrishiMitra/
 ├── backend/
 │   ├── app.py                # Flask backend
@@ -30,11 +31,14 @@ KrishiMitra/
 │   └── assets/               # Images, icons, etc.
 │
 ├── .gitignore
+├── requirements.txt          # Python dependencies
+├── Procfile                  # For deployment (e.g., Railway/Heroku)
 └── README.md
 
 
-
 ---
+
+```
 
 # 🧩 Features
 
