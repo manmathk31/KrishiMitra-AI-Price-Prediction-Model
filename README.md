@@ -251,15 +251,13 @@ http://localhost:5000
 
 ### 🚀 **[Try KrishiMitra Now](https://your-deployment-link.com)**
 
-*Experience the power of AI-driven price predictions*
+
 
 </div>
 
 ---
 
 ## 📱 Usage Guide
-
-### 🎯 For Farmers & Traders
 
 1. **🌾 Select Crop** → Choose your crop from dropdown
 2. **📍 Choose Location** → Select State → District → Market
@@ -292,7 +290,7 @@ http://localhost:5000
 
 <div align="center">
 
-### 💚 Made with Love for Indian Farmers 🇮🇳
+### 💚 Made with Love for Farmers
 
 **If you find this project helpful, please ⭐ star this repository!**
 
