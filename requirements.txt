@@ -4,3 +4,4 @@ flask-cors==3.0.10
 numpy
 scikit-learn
 pandas
+gunicorn
